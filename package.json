@@ -15,7 +15,25 @@
     "copy:plugin": "copyfiles package.json ./dist/**/*.js node_modules/typedoc-plugin-markdown-pages/",
     "example": "npm run build && npm run prepare:plugin && npm run build:example",
     "prepare:plugin": "npm run clean:plugin && npm run copy:plugin",
-    "test.unit": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test.unit": "mocha -r ts-node/register test/**/*.spec.ts",
+	"test.unit.cover": "nyc mocha -r ts-node/register -r source-map-support/register --recursive test/**/*.spec.ts",
+	"report-coverage": "codecov"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "dist/**/*",
+      "example-project/**/*",
+      "example-project-documentation/**/*",
+      "test/**/*",
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "lcovonly"
+    ],
+    "all": true
   },
   "repository": {
     "type": "git",
@@ -36,9 +54,12 @@
   "devDependencies": {
     "@types/mocha": "^5.2.6",
     "chai": "^4.2.0",
+    "codecov": "^3.3.0",
     "copyfiles": "^2.1.0",
     "mocha": "^6.1.3",
+    "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
+    "source-map-support": "^0.5.12",
     "ts-node": "^8.0.3",
     "tslint": "^5.15.0",
     "typedoc": "^0.14.2",

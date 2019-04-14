@@ -65,3 +65,7 @@ dist/
 
 # example documentation build
 example-project-documentation/
+
+# code coverage
+.nyc_output/
+coverage/
