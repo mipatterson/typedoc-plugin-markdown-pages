@@ -1,0 +1,39 @@
+{
+  "name": "typedoc-plugin-markdown-pages",
+  "version": "0.1.0",
+  "description": "A Typedoc plugin that lets you integrate custom markdown pages into your documentation output",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "build:example": "npm run clean:example && typedoc --out ./example-project-documentation ./example-project/src --name StudentAPI --readme ./example-project/documentation/README.md --logger console --mdPagesSourceDir ./example-project/documentation/pages/ --theme ./src/theme/",
+    "clean": "rimraf ./dist",
+    "clean:example": "rimraf ./example-project/dist",
+    "clean:plugin": "rimraf  node_modules/typedoc-plugin-markdown-pages",
+    "copy:plugin": "copyfiles package.json ./dist/**/*.js node_modules/typedoc-plugin-markdown-pages/",
+    "example": "npm run build && npm run prepare:plugin && npm run build:example",
+    "prepare:plugin": "npm run clean:plugin && npm run copy:plugin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mipatterson/typedoc-plugin-markdown-pages.git"
+  },
+  "keywords": [
+    "typedocplugin",
+    "typedoc",
+    "markdown",
+    "pages"
+  ],
+  "author": "Mike Patterson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mipatterson/typedoc-plugin-markdown-pages/issues"
+  },
+  "homepage": "https://github.com/mipatterson/typedoc-plugin-markdown-pages#readme",
+  "devDependencies": {
+    "copyfiles": "^2.1.0",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.15.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.4.3"
+  }
+}
