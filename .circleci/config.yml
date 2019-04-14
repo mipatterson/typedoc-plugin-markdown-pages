@@ -1,6 +1,6 @@
-version: 2.0
+version: 2
 jobs:
-  setup:
+  build:
     working_directory: ~/repo
     docker:
       - image: circleci/node:7.10.0
@@ -15,26 +15,5 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - node_modules
-  build:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:7.10.0
-    steps:
       - run: npm run build
-  unit_test:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:7.10.0
-    steps:
       - run: npm run test.unit
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - setup
-      - build:
-          requires:
-            - setup
-      - test:
-          requires:
-            - build
