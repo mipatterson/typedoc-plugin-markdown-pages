@@ -16,8 +16,7 @@
     "example": "npm run build && npm run prepare:plugin && npm run build:example",
 	"prepare:plugin": "npm run clean:plugin && npm run copy:plugin",
 	"test.unit": "mocha -r ts-node/register test/**/*.spec.ts",
-	"test.unit.coverage": "nyc mocha -r ts-node/register -r source-map-support/register --recursive test/**/*.spec.ts",
-	"report-coverage": "codecov"
+	"test.unit.coverage": "nyc mocha -r ts-node/register -r source-map-support/register --recursive test/**/*.spec.ts"
   },
   "nyc": {
     "extension": [
@@ -31,7 +30,7 @@
       "**/*.d.ts"
     ],
     "reporter": [
-      "html"
+      "lcovonly"
     ],
     "all": true
   },

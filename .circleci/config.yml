@@ -1,4 +1,6 @@
 version: 2
+orbs:
+  codecov: codecov/codecov@1.0.2
 jobs:
   build:
     working_directory: ~/repo
@@ -17,4 +19,5 @@ jobs:
             - node_modules
       - run: npm run build
       - run: npm run test.unit.coverage
-      - run: npm run report-coverage
+      - codecov/upload:
+          file: {{ ./coverage/lcov.info }}
