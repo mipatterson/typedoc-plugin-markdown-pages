@@ -10,31 +10,64 @@ export class NavigationHelper {
 		this._logger = logger;
 	}
 
-	public getNavigationItem(pageEvent: PageEvent, pageCollection: IMarkdownPageCollection): NavigationItem {
+	public getNavigationItem(pageEvent: PageEvent, overallPageCollection: IMarkdownPageCollection, label: string): NavigationItem {
 		try {
-			this._logger.verbose("Getting pages navigation item...");
+			this._logger.verbose(`Getting markdown page NavigationItem for page "${pageEvent.url}"...`);
+
+			const isMarkdownPage = !!pageEvent.model.mdPage;
+
+			if (isMarkdownPage) {
+				const mdPage = pageEvent.model.mdPage; 
+				const isCollection = !!mdPage.children;
+
+				if (isCollection) {
+					return this._buildNavigationItemForCollection(mdPage, label, pageEvent.url);
+				} else {
+					const parentPage: IMarkdownPageCollection = pageEvent.model.parent.mdPage;
+					return this._buildNavigationItemForCollection(parentPage, label, pageEvent.url);
+				}
+			} else {
+				return this._buildNavigationItemForCollection(overallPageCollection, label, pageEvent.url);
+			}
+		} catch (e) {
+			const errorMessage = `Failed to get pages NavigationItem. ${e}`;
+			this._logger.error(errorMessage);
+			throw new Error(errorMessage);
+		}
+	}
+
+	private _buildNavigationItemForCollection(collection: IMarkdownPageCollection, label: string, currentUrl: string): NavigationItem {
+		try {
+			this._logger.verbose(`Building NavigationItem for collection "${collection.title}"...`);
 
 			const topLevelItem = new NavigationItem();
 			topLevelItem.children = [];
 
-			const labelItem = new NavigationItem("Pages"); // TODO: Make this configurable
-			labelItem.isLabel = true;
-			labelItem.isVisible = true;
+			// Create label
+			const labelItem = this._getLabelItem(label);
 			topLevelItem.children.push(labelItem);
 
-			for (const page of pageCollection.children) {
+			// Build child items
+			for (const page of collection.children) {
 				const pageNav = new NavigationItem(page.title, page.url);
 				// pageNav.isCurrent = page.url === pageEvent.url; // TODO: Determine if this needs to be set
-				pageNav.isInPath = page.url === pageEvent.url;
+				pageNav.isInPath = page.url === currentUrl;
 				pageNav.isVisible = true;
 				topLevelItem.children.push(pageNav);
 			}
 
 			return topLevelItem;
 		} catch (e) {
-			const errorMessage = `Failed to get pages NavigationItem. ${e}`;
+			const errorMessage = `Failed to get NavigationItem for page collection "${collection.title}". ${e}`;
 			this._logger.error(errorMessage);
 			throw new Error(errorMessage);
 		}
+	}
+
+	private _getLabelItem(text: string): NavigationItem {
+		const labelItem = new NavigationItem(text);
+		labelItem.isLabel = true;
+		labelItem.isVisible = true;
+		return labelItem;
 	}
 }
