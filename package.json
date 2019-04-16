@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "npm run clean && tsc",
-    "build:example": "npm run clean:example && typedoc --out ./example-project-documentation ./example-project/src --name StudentAPI --readme ./example-project/documentation/README.md --logger console --mdPagesSourceDir ./example-project/documentation/pages/ --theme ./src/theme/",
+    "build:example": "npm run clean:example && typedoc --out ./example-project-documentation ./example-project/src --name StudentAPI --readme ./example-project/documentation/README.md --logger console --mdPagesLabel \"Custom Pages\" --mdPagesSourceDir ./example-project/documentation/pages/ --theme ./src/theme/",
     "clean": "rimraf ./dist",
     "clean:example": "rimraf ./example-project/dist",
     "clean:plugin": "rimraf  node_modules/typedoc-plugin-markdown-pages",

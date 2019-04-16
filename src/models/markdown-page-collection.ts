@@ -5,6 +5,7 @@ import { MarkdownPage } from "./markdown-page";
 import { join } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
+import { Logger } from "typedoc/dist/lib/utils/loggers";
 
 export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdownPage {
 	public title: string;
@@ -14,10 +15,17 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 	public url: string;
 	public contents: string;
 
-	constructor(path: string, url: string) {
+	private _logger: Logger;
+
+	constructor(logger: Logger, path: string, url: string) {
+		this._logger = logger;
 		this.path = path;
 		this.url = url;
 		this.children = [];
+
+		if (!isDirectory(path)) {
+			throw new Error(`Markdown page collection path "${path}" is not a directory.`);
+		}
 
 		this._parseTitle(path);
 	}
@@ -32,7 +40,7 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 				const childUrl = resolve(this.url, this._getItemOutputFilename(childItem));
 
 				if (isDirectory(childPath)) {
-					childPage = new MarkdownPageCollection(childPath, childUrl);
+					childPage = new MarkdownPageCollection(this._logger, childPath, childUrl);
 				} else {
 					childPage = new MarkdownPage(childPath, childUrl);
 				}
@@ -54,17 +62,41 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 		}
 	}
 
+	public log(): void {
+		this._recursiveLog(this as IMarkdownPage, 0);
+	}
+
 	private _parseTitle(path: string): void {
-		const fileName = getFileName(path);
-		const fileExtension = getFileExtension(fileName);
-		const itemNameWithoutExtension = fileName.slice(0, (1 + fileExtension.length) * -1);
-		const humanReadableName = getHumanReadableNameFromFileName(itemNameWithoutExtension);
+		const dirName = getFileName(path);
+		const humanReadableName = getHumanReadableNameFromFileName(dirName);
 		this.title = humanReadableName;
 	}
 
 	private _getItemOutputFilename(sourceItemName: string): string { // TODO: rename this
 		const fileExtension = getFileExtension(sourceItemName);
-		const itemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+		const itemNameWithoutExtension = sourceItemName.slice(0, fileExtension.length * -1);
 		return itemNameWithoutExtension + ".html";
+	}
+
+	private _recursiveLog(page: IMarkdownPage, depth: number): void {
+		const isCollection = !!(page as any).children;
+
+		if (depth === 0) {
+			this._logger.verbose(page.title);
+		} else {
+			let prefix = "";
+			for (let i = 0; i < depth; i++) {
+				prefix += " ";
+			}
+			prefix += "|__"
+			this._logger.verbose(`${prefix}${page.title}`);
+		}
+
+		if (isCollection) {
+			for (const child of (page as IMarkdownPageCollection).children) {
+				const newDepth = depth + Math.floor(page.title.length / 2) + (depth === 0 ? 0 : 3);
+				this._recursiveLog(child, newDepth);
+			}
+		}
 	}
 }

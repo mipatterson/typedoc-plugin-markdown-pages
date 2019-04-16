@@ -26,7 +26,7 @@ describe("NavigationHelper", () => {
 			collectionMock.setup(c => c.children).returns(() => []);
 
 			// act
-			const result = sut.getNavigationItem(eventMock.object, collectionMock.object);
+			const result = sut.getNavigationItem(eventMock.object, collectionMock.object, "labelText");
 
 			// assert
 			expect(result).to.not.be.undefined;
