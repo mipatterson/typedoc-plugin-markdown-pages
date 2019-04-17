@@ -1,7 +1,7 @@
 {
   "name": "typedoc-plugin-markdown-pages",
   "version": "0.1.0",
-  "description": "A Typedoc plugin that lets you integrate custom markdown pages into your documentation output",
+  "description": "A TypeDoc plugin that lets you integrate custom markdown pages into your documentation output",
   "main": "dist/index.js",
   "files": [
     "dist/"

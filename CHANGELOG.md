@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - `mdPagesLabel` option for specifying the top-level page title
 - Improved navigation handling and breadcrumbs
 - Better logging for discovered pages
+- README usage documentation
 
 ## [0.1.0] - 2019-04-14
 ### Added
