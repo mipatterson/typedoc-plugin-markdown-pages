@@ -52,11 +52,11 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 				} else {
 					this.children.push(childPage);
 				}
-
-
 			}
 
-			// Add option for creating an index file
+			if (!this.contents) {
+				this._generateIndexContents();
+			}
 		} catch (e) {
 			throw new Error(`Failed to read page collection contents. ${e}`);
 		}
@@ -97,6 +97,25 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 				const newDepth = depth + Math.floor(page.title.length / 2) + (depth === 0 ? 0 : 3);
 				this._recursiveLog(child, newDepth);
 			}
+		}
+	}
+
+	private _generateIndexContents(): void {
+		try {
+			this._logger.verbose(`Generating index contents for page "${this.title}"...`);
+
+			let contents = "## Contents";
+
+			for (const child of this.children) {
+				contents += `\n- [${child.title}](${child.url})`; // fix relative url
+			}
+
+			this.contents = contents;
+			this._logger.verbose(this.contents);
+		} catch (e) {
+			const errorMessage = `Failed to generate index contents. ${e}`;
+			this._logger.error(errorMessage);
+			throw new Error(errorMessage);
 		}
 	}
 }
