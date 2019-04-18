@@ -1,7 +1,11 @@
-import { basename, extname } from "path";
+import { basename, dirname, extname } from "path";
 
 export function getFileName(filePath: string): string {
 	return basename(filePath);
+}
+
+export function getDirectoryName(filePath: string): string {
+	return dirname(filePath);
 }
 
 export function getFileExtension(fileName: string): string {

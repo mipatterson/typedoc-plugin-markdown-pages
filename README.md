@@ -24,6 +24,76 @@ The following command will parse all the markdown files in the `/path/to/markdow
 $ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages
 ```
 
+## Directory Structure
+
+The directory structure of the source directory you point to with the `mdPagesSourceDir` option will determine how the pages are output in the TypeDoc build. For the most part, the output structure will match the input.
+
+For example, consider the following documentation structure:
+
+```
+docs/
+┠── GuideA.md
+┠── GuideB.md
+┠── CustomWorkflowOne/
+┃   ┠── GuideC.md
+┃   ┖── GuideD.md
+┠── CustomWorkflowOne/
+┃   ┠── index.md
+┃   ┠── GuideC.md
+┃   ┖── GuideD.md
+┖── CustomWorkflowOne/
+    ┠── README.md
+    ┠── GuideC.md
+    ┖── GuideD.md
+```
+
+The above documentation structure will produce the following HTML output structure:
+
+```
+pages/
+┠── index.html
+┠── GuideA.html
+┠── GuideB.html
+┠── CustomWorkflowOne/
+┃   ┠── index.html
+┃   ┠── GuideC.html
+┃   ┖── GuideD.html
+┠── CustomWorkflowOne/
+┃   ┠── index.html
+┃   ┠── GuideC.html
+┃   ┖── GuideD.html
+┖── CustomWorkflowOne/
+    ┠── index.html
+    ┠── GuideC.html
+    ┖── GuideD.html
+```
+
+Each markdown source file resulted in an associated HTML output file.
+
+## Page Naming
+
+The file names of the markdown source files will be used to determine the names of the pages used in the documentation navigation and breadcrumbs. Markdown source files should use Pascal-cased in order to achieve nicely-named page names in the documentation output.
+
+For example, a markdown file named "HowToDoSomething.md" will be displayed as "How To Do Something" in the documentation site's navigation and breadcrumbs.
+
+## Custom Index Files
+
+Each directory in the output will have an `index.html` file. By default, this file is auto-generated to include a list of links to the "child" pages inside that directory. You can provide your own custom index file by placing a markdown file in the source directory that named either `index.md` or `readme.md`.
+
+_Note: Casing does not matter in the name of your custom index file._
+
+## Navigation Label
+
+By default, the navigation label shown above the page links in the navigation controls will display as "Pages". This can be customized by setting the `mdPagesLabel` option.
+
+For example, the following command would rename this label to be "Guides":
+
+```powershell
+$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --mdPagesLabel Guides
+```
+
+_Note: If your custom label contains spaces, wrap it in double quotes. Don't forget to escape the quotation characters if you're defining an npm script._
+
 ## Options
 
 The following options are available:
