@@ -32,40 +32,40 @@ For example, consider the following documentation structure:
 
 ```
 docs/
-┠── GuideA.md
-┠── GuideB.md
-┠── CustomWorkflowOne/
-┃   ┠── GuideC.md
-┃   ┖── GuideD.md
-┠── CustomWorkflowOne/
-┃   ┠── index.md
-┃   ┠── GuideC.md
-┃   ┖── GuideD.md
-┖── CustomWorkflowOne/
-    ┠── README.md
-    ┠── GuideC.md
-    ┖── GuideD.md
+├── GuideA.md
+├── GuideB.md
+├── CustomWorkflowOne/
+│   ├── GuideC.md
+│   └── GuideD.md
+├── CustomWorkflowOne/
+│   ├── index.md
+│   ├── GuideC.md
+│   └── GuideD.md
+└── CustomWorkflowOne/
+    ├── README.md
+    ├── GuideC.md
+    └── GuideD.md
 ```
 
 The above documentation structure will produce the following HTML output structure:
 
 ```
 pages/
-┠── index.html
-┠── GuideA.html
-┠── GuideB.html
-┠── CustomWorkflowOne/
-┃   ┠── index.html
-┃   ┠── GuideC.html
-┃   ┖── GuideD.html
-┠── CustomWorkflowOne/
-┃   ┠── index.html
-┃   ┠── GuideC.html
-┃   ┖── GuideD.html
-┖── CustomWorkflowOne/
-    ┠── index.html
-    ┠── GuideC.html
-    ┖── GuideD.html
+├── index.html
+├── GuideA.html
+├── GuideB.html
+├── CustomWorkflowOne/
+│   ├── index.html
+│   ├── GuideC.html
+│   └── GuideD.html
+├── CustomWorkflowOne/
+│   ├── index.html
+│   ├── GuideC.html
+│   └── GuideD.html
+└── CustomWorkflowOne/
+    ├── index.html
+    ├── GuideC.html
+    └── GuideD.html
 ```
 
 Each markdown source file resulted in an associated HTML output file.
@@ -74,7 +74,7 @@ Each markdown source file resulted in an associated HTML output file.
 
 The file names of the markdown source files will be used to determine the names of the pages used in the documentation navigation and breadcrumbs. Markdown source files should use Pascal-cased in order to achieve nicely-named page names in the documentation output.
 
-For example, a markdown file named "HowToDoSomething.md" will be displayed as "How To Do Something" in the documentation site's navigation and breadcrumbs.
+For example, a markdown file named `HowToDoSomething.md` will be displayed as `How To Do Something` in the documentation site's navigation and breadcrumbs.
 
 ## Custom Index Files
 
@@ -82,7 +82,7 @@ Each directory in the output will have an `index.html` file. By default, this fi
 
 _Note: Casing does not matter in the name of your custom index file._
 
-## Navigation Label
+## Custom Navigation Label
 
 By default, the navigation label shown above the page links in the navigation controls will display as "Pages". This can be customized by setting the `mdPagesLabel` option.
 
@@ -98,7 +98,7 @@ _Note: If your custom label contains spaces, wrap it in double quotes. Don't for
 
 The following options are available:
 
-| Option           | Description                                                      | Default Value | Example                                    |
-| ---------------- | ---------------------------------------------------------------- | ------------- | ------------------------------------------ |
-| mdPagesSourceDir | The path to the directory where markdown pages will be read from | n/a           | `--mdPagesSourceDir ./custom/path/to/docs` |
-| mdPagesLabel     | The navigation label for markdown pages                          | "Pages"       | `--mdPagesLabel \"Custom Label\"`          |
+| Option               | Description                                                      | Default Value |
+| -------------------- | ---------------------------------------------------------------- | ------------- |
+| `--mdPagesSourceDir` | The path to the directory where markdown pages will be read from | n/a           |
+| `--mdPagesLabel`     | The navigation label for markdown pages                          | "Pages"       |
