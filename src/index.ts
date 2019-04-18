@@ -1,4 +1,4 @@
-import { Application } from 'typedoc/dist/lib/application';
+import { Application } from "typedoc/dist/lib/application";
 import { PLUGIN_NAME } from "./constants";
 import { LABEL_OPTION, OUTPUT_DIR_OPTION, SOURCE_DIR_OPTION } from "./options";
 import { MarkdownPagesPlugin } from "./plugin";

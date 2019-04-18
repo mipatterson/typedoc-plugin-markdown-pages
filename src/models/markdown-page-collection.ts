@@ -1,8 +1,8 @@
 import { IMarkdownPageCollection } from "../interfaces/markdown-page-collection-interface";
 import { IMarkdownPage } from "../interfaces/markdown-page-interface";
-import { getFileExtension, getFileName, getHumanReadableNameFromFileName } from "../utilities/path-utilities";
+import { getDirectoryName, getFileExtension, getFileName, getHumanReadableNameFromFileName } from "../utilities/path-utilities";
 import { MarkdownPage } from "./markdown-page";
-import { join } from "path";
+import { join, relative } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
@@ -37,9 +37,10 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 			for (const childItem of childItems) {
 				let childPage: IMarkdownPage;
 				const childPath = join(this.path, childItem)
-				const childUrl = resolve(this.url, this._getItemOutputFilename(childItem));
+				const isChildADirectory = isDirectory(childPath);
+				const childUrl = this._getItemUrl(childItem, isChildADirectory);
 
-				if (isDirectory(childPath)) {
+				if (isChildADirectory) {
 					childPage = new MarkdownPageCollection(this._logger, childPath, childUrl);
 				} else {
 					childPage = new MarkdownPage(childPath, childUrl);
@@ -52,11 +53,11 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 				} else {
 					this.children.push(childPage);
 				}
-
-
 			}
 
-			// Add option for creating an index file
+			if (!this.contents) {
+				this._generateIndexContents();
+			}
 		} catch (e) {
 			throw new Error(`Failed to read page collection contents. ${e}`);
 		}
@@ -72,10 +73,19 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 		this.title = humanReadableName;
 	}
 
-	private _getItemOutputFilename(sourceItemName: string): string { // TODO: rename this
-		const fileExtension = getFileExtension(sourceItemName);
-		const itemNameWithoutExtension = sourceItemName.slice(0, fileExtension.length * -1);
-		return itemNameWithoutExtension + ".html";
+	private _getItemUrl(sourceItemName: string, isDirectory: boolean): string {
+		const urlPathToCollection = getDirectoryName(this.url)
+			.replace(/\/?$/, "/"); // ensure last character is a slash
+
+		if (isDirectory) {
+			const newDir = resolve(urlPathToCollection, sourceItemName)
+				.replace(/\/?$/, "/"); // ensure last character is a slash
+			return resolve(newDir, "index.html");
+		} else {
+			const fileExtension = getFileExtension(sourceItemName);
+			const sourceItemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+			return resolve(urlPathToCollection, sourceItemNameWithoutExtension) + ".html";
+		}
 	}
 
 	private _recursiveLog(page: IMarkdownPage, depth: number): void {
@@ -97,6 +107,26 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 				const newDepth = depth + Math.floor(page.title.length / 2) + (depth === 0 ? 0 : 3);
 				this._recursiveLog(child, newDepth);
 			}
+		}
+	}
+
+	private _generateIndexContents(): void {
+		try {
+			this._logger.verbose(`Generating index contents for page "${this.title}"...`);
+
+			let contents = "## Contents";
+
+			for (const child of this.children) {
+				const childUrl = getFileName(child.url);
+				contents += `\n- [${child.title}](${childUrl})`;
+			}
+
+			this.contents = contents;
+			this._logger.verbose(this.contents);
+		} catch (e) {
+			const errorMessage = `Failed to generate index contents. ${e}`;
+			this._logger.error(errorMessage);
+			throw new Error(errorMessage);
 		}
 	}
 }
