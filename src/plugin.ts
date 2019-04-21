@@ -160,7 +160,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 		// Setup theme if it was requested
 		if (themeNameOption === THEME_NAME) {
 			const pluginTheme = new DefaultTheme(renderer, themePath);
-     		renderer.theme = renderer.addComponent("theme", pluginTheme);
+			renderer.theme = renderer.addComponent("theme", pluginTheme);
 		}
 	}
 }
