@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Support for customizable index pages
 - Support for auto-generated index pages
 - Improved HTML file naming in output
+- Allow theme to be used by specifying plugin name to --theme option
 
 ## [0.1.0] - 2019-04-14
 ### Added

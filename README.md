@@ -21,7 +21,7 @@ After installing the plugin, add the `mdPagesSourceDir` option to your TypeDoc c
 The following command will parse all the markdown files in the `/path/to/markdown/doc/pages` directory and add them as separate documentation pages to the TypeDoc output.
 
 ```powershell
-$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages
+$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --theme markdown-pages
 ```
 
 ## Directory Structure
@@ -82,6 +82,22 @@ Each directory in the output will have an `index.html` file. By default, this fi
 
 _Note: Casing does not matter in the name of your custom index file._
 
+## Themes
+
+### Built-In Theme
+
+This plugin comes with its own built-in theme that integrates the markdown pages into the site navigation and renders the markdown content. To use this theme pass `markdown-pages` as the value to the `--theme` option.
+
+### Custom Themes
+
+Alternatively, you can also integrate the extra markdown pages into your own themes.
+
+Markdown pages are rendered using the `page.hbs` template and the page content can be accessed via `model.mdPage.contents`.
+
+The page navigation elements can be accessed via `mdPagesNavigation.children`, similar to how standard navigation items are referenced.
+
+For examples, see `/src/theme/templates/page.hbs` and `/src/theme/layouts/default.hbs`.
+
 ## Custom Navigation Label
 
 By default, the navigation label shown above the page links in the navigation controls will display as "Pages". This can be customized by setting the `mdPagesLabel` option.
@@ -89,7 +105,7 @@ By default, the navigation label shown above the page links in the navigation co
 For example, the following command would rename this label to be "Guides":
 
 ```powershell
-$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --mdPagesLabel Guides
+$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --theme markdown-pages --mdPagesLabel Guides
 ```
 
 _Note: If your custom label contains spaces, wrap it in double quotes. Don't forget to escape the quotation characters if you're defining an npm script._

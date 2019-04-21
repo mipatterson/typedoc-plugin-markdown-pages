@@ -5,10 +5,6 @@ import { MarkdownPagesPlugin } from "./plugin";
 
 module.exports = (PluginHost: Application): void => {
 	const app = PluginHost.owner;
-	
-	if (app.converter.hasComponent(PLUGIN_NAME)) {
-		return;
-	}
 
 	// Register options
 	app.options.addDeclaration(LABEL_OPTION);
