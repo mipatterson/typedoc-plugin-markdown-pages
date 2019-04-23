@@ -1,7 +1,7 @@
 import { Component, RendererComponent } from "typedoc/dist/lib/output/components";
 import { Converter } from 'typedoc/dist/lib/converter/converter';
 import { PageEvent, RendererEvent } from "typedoc/dist/lib/output/events";
-import { DEFAULT_PAGES_LABEL, PLUGIN_NAME, THEME_NAME } from "./constants";
+import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL, PLUGIN_NAME, THEME_NAME } from "./constants";
 import { OptionsReadMode } from "typedoc/dist/lib/utils/options";
 import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "./options";
 import { join, resolve } from "path";
@@ -143,7 +143,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 			const pagesOutputDir = options.getValue(OUTPUT_DIR_NAME_OPTION.name);
 
 			if (!pagesOutputDir || pagesOutputDir.length === 0) {
-				return "pages";
+				return DEFAULT_OUTPUT_DIR_NAME;
 			} else {
 				return pagesOutputDir;
 			}
