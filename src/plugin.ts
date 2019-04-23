@@ -34,12 +34,12 @@ export class MarkdownPagesPlugin extends RendererComponent {
 
         this.listenTo(this.owner, {
 			[RendererEvent.BEGIN]: this.renderBeginEventHandler,
-			[PageEvent.BEGIN]: this.pageBeginEventHandler,
+			[PageEvent.BEGIN]: this._pageBeginEventHandler,
 		});
 	}
 
 	private get _logger(): Logger {
-		return this.application.logger;
+		return this.owner.application.logger;
 	}
 
 	private _converterResolveBeginEventHandler(): void {
@@ -71,7 +71,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
      *
      * @param page An event object describing the current render operation.
      */
-    private pageBeginEventHandler(pageEvent: ExtendedPageEvent) {
+    private _pageBeginEventHandler(pageEvent: ExtendedPageEvent) {
 		if (this._pageCollection) { // TODO: Make sure this check works if there are no pages
 			const options = this._getOptions();
 			const labelText = this._getPagesLabel(options);
@@ -120,8 +120,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 			const pagesSourceDir = options.getValue(SOURCE_DIR_OPTION.name);
 
 			if (!pagesSourceDir || pagesSourceDir.length === 0) {
-				// TODO: Try to use path relative to readme path
-				return pagesSourceDir;
+				throw new Error("Pages source location must be specified.");
 			} else {
 				return resolve(pagesSourceDir);
 			}
