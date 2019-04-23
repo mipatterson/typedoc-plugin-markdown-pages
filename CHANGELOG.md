@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Support for auto-generated index pages
 - Improved HTML file naming in output
 - Allow theme to be used by specifying plugin name to --theme option
+- `mdPagesOutputDirName` option for specifying the name of the output directory
 
 ## [0.1.0] - 2019-04-14
 ### Added

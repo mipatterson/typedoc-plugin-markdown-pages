@@ -3,7 +3,7 @@ import { Converter } from 'typedoc/dist/lib/converter/converter';
 import { PageEvent, RendererEvent } from "typedoc/dist/lib/output/events";
 import { DEFAULT_PAGES_LABEL, PLUGIN_NAME, THEME_NAME } from "./constants";
 import { OptionsReadMode } from "typedoc/dist/lib/utils/options";
-import { LABEL_OPTION, SOURCE_DIR_OPTION } from "./options";
+import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "./options";
 import { join, resolve } from "path";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { ExtendedPageEvent } from "./models/extended-page-event";
@@ -83,10 +83,11 @@ export class MarkdownPagesPlugin extends RendererComponent {
 		try {
 			// Get options
 			const pagesSrcDir = this._getPagesSourceLocation(options);
+			const pagesOutputDirName = this._getPagesOutputDirName(options);
 			const label = this._getPagesLabel(options);
 
 			// Get pages and read contents
-			const collection = new MarkdownPageCollection(this._logger, pagesSrcDir, "pages/index.html"); // TODO: make url configurable
+			const collection = new MarkdownPageCollection(this._logger, pagesSrcDir, `${pagesOutputDirName}/index.html`);
 			collection.title = label;
 			collection.readContents();
 			collection.log();
@@ -126,6 +127,28 @@ export class MarkdownPagesPlugin extends RendererComponent {
 			}
 		} catch (e) {
 			const errorMessage = `Failed to get pages source location from options. ${e}`;
+			this._logger.error(errorMessage);
+			throw new Error(errorMessage);
+		}
+	}
+
+	/**
+	 * Retrieves the pages output directory name option
+	 * @param options Application options
+	 * @returns The pages output directory name
+	 */
+	private _getPagesOutputDirName(options: Options): string {
+		try {
+			// Get option
+			const pagesOutputDir = options.getValue(OUTPUT_DIR_NAME_OPTION.name);
+
+			if (!pagesOutputDir || pagesOutputDir.length === 0) {
+				return "pages";
+			} else {
+				return pagesOutputDir;
+			}
+		} catch (e) {
+			const errorMessage = `Failed to get pages output directory name from options. ${e}`;
 			this._logger.error(errorMessage);
 			throw new Error(errorMessage);
 		}

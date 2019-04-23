@@ -114,7 +114,8 @@ _Note: If your custom label contains spaces, wrap it in double quotes. Don't for
 
 The following options are available:
 
-| Option               | Description                                                      | Default Value |
-| -------------------- | ---------------------------------------------------------------- | ------------- |
-| `--mdPagesSourceDir` | The path to the directory where markdown pages will be read from | n/a           |
-| `--mdPagesLabel`     | The navigation label for markdown pages                          | "Pages"       |
+| Option                   | Description                                                              | Default Value |
+| ------------------------ | ------------------------------------------------------------------------ | ------------- |
+| `--mdPagesSourceDir`     | The path to the directory where markdown pages will be read from         | n/a           |
+| `--mdPagesOutputDirName` | The name of the output directory where markdown pages will be written to | "pages"       |
+| `--mdPagesLabel`         | The navigation label for markdown pages                                  | "Pages"       |
