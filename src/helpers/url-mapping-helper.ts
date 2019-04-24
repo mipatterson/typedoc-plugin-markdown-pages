@@ -43,7 +43,7 @@ export class UrlMappingHelper {
 				const collection = page as IMarkdownPageCollection;
 
 				// Create mapping for collection
-				const collectionMapping = this._buildUrlMapping(parentMapping, collection.url, collection.title, collection.contents);
+				const collectionMapping = this._buildUrlMapping(parentMapping, collection);
 				mappings.push(collectionMapping);
 
 				// Recursively create mappings for children
@@ -52,7 +52,7 @@ export class UrlMappingHelper {
 				}
 			} else {
 				// Create mapping for page
-				const pageMapping = this._buildUrlMapping(parentMapping, page.url, page.title, page.contents);
+				const pageMapping = this._buildUrlMapping(parentMapping, page);
 				mappings.push(pageMapping);
 			}
 
@@ -64,7 +64,7 @@ export class UrlMappingHelper {
 		}
 	}
 
-	private _buildUrlMapping(parentMapping: UrlMapping, url: string, name: string, contents: string): UrlMapping {
+	private _buildUrlMapping(parentMapping: UrlMapping, page: IMarkdownPage): UrlMapping {
 		try {
 			const newModel: any = {};
 
@@ -76,11 +76,11 @@ export class UrlMappingHelper {
 			}
 
 			newModel.parent = parentMapping.model;
-			newModel.url = url;
-			newModel.name = name;
-			newModel.contents = contents;
+			newModel.url = page.url;
+			newModel.name = page.title;
+			newModel.mdPage = page;
 
-			return new UrlMapping(url, newModel, "page.hbs"); // TODO: make template configurable
+			return new UrlMapping(page.url, newModel, "page.hbs"); // TODO: make template configurable
 		} catch (e) {
 			const errorMessage = `Failed to build UrlMapping. ${e}`;
 			this._logger.error(errorMessage);

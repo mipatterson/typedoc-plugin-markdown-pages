@@ -1,20 +1,40 @@
 {
   "name": "typedoc-plugin-markdown-pages",
-  "version": "0.1.0",
-  "description": "A Typedoc plugin that lets you integrate custom markdown pages into your documentation output",
+  "version": "0.2.0",
+  "description": "A TypeDoc plugin that lets you integrate custom markdown pages into your documentation output",
   "main": "dist/index.js",
   "files": [
-	  "dist/"
+    "dist/"
   ],
   "scripts": {
-    "build": "npm run clean && tsc",
-    "build:example": "npm run clean:example && typedoc --out ./example-project-documentation ./example-project/src --name StudentAPI --readme ./example-project/documentation/README.md --logger console --mdPagesSourceDir ./example-project/documentation/pages/ --theme ./src/theme/",
+    "build": "npm run clean && tsc && npm run copy:theme",
+    "build:example": "npm run clean:example && typedoc --out ./example-project-documentation ./example-project/src --name StudentAPI --readme ./example-project/documentation/README.md --logger console --mdPagesLabel \"Custom Pages\" --mdPagesSourcePath ./example-project/documentation/pages/ --mdPagesOutputDirName guides --theme markdown-pages",
     "clean": "rimraf ./dist",
     "clean:example": "rimraf ./example-project/dist",
     "clean:plugin": "rimraf  node_modules/typedoc-plugin-markdown-pages",
-    "copy:plugin": "copyfiles package.json ./dist/**/*.js node_modules/typedoc-plugin-markdown-pages/",
+	"copy:plugin": "copyfiles package.json ./dist/**/* node_modules/typedoc-plugin-markdown-pages/",
+	"copy:theme": "copyfiles ./src/theme/**/* ./dist/theme/ -u 2",
     "example": "npm run build && npm run prepare:plugin && npm run build:example",
-    "prepare:plugin": "npm run clean:plugin && npm run copy:plugin"
+    "prepare:plugin": "npm run clean:plugin && npm run copy:plugin",
+    "test:unit": "mocha -r ts-node/register test/**/*.spec.ts",
+	"test:unit:cover": "nyc mocha -r ts-node/register -r source-map-support/register --recursive test/**/*.spec.ts",
+	"report-coverage": "codecov"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "dist/**/*",
+      "example-project/**/*",
+      "example-project-documentation/**/*",
+      "test/**/*",
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "lcovonly"
+    ],
+    "all": true
   },
   "repository": {
     "type": "git",
@@ -33,10 +53,18 @@
   },
   "homepage": "https://github.com/mipatterson/typedoc-plugin-markdown-pages#readme",
   "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "chai": "^4.2.0",
+    "codecov": "^3.3.0",
     "copyfiles": "^2.1.0",
+    "mocha": "^6.1.3",
+    "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
+    "source-map-support": "^0.5.12",
+    "ts-node": "^8.0.3",
     "tslint": "^5.15.0",
     "typedoc": "^0.14.2",
+    "typemoq": "^2.1.0",
     "typescript": "^3.4.3"
   }
 }
