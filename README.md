@@ -6,7 +6,7 @@
 [![build](https://img.shields.io/circleci/project/github/mipatterson/typedoc-plugin-markdown-pages/develop.svg)](https://circleci.com/gh/mipatterson/typedoc-plugin-markdown-pages/tree/develop)
 [![coverage](https://img.shields.io/codecov/c/github/mipatterson/typedoc-plugin-markdown-pages/develop.svg)](https://codecov.io/gh/mipatterson/typedoc-plugin-markdown-pages)
 
-> ⚠️ While this plugin is functional, it is still a work in progress and undergoing active development.
+> ⚠️ This plugin is still under active development and some options or formatting may change before the v1.0.0 release.
 
 ## Installation
 
