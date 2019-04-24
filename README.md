@@ -16,17 +16,17 @@ $ npm install typedoc-plugin-markdown-pages --save-dev
 
 ## Usage
 
-After installing the plugin, add the `mdPagesSourceDir` option to your TypeDoc command. This option should point to the directory of your markdown files.
+After installing the plugin, add the `mdPagesSourcePath` option to your TypeDoc command. This option should point to the directory of your markdown files.
 
 The following command will parse all the markdown files in the `/path/to/markdown/doc/pages` directory and add them as separate documentation pages to the TypeDoc output.
 
 ```powershell
-$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --theme markdown-pages
+$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourcePath path/to/markdown/doc/pages --theme markdown-pages
 ```
 
 ## Directory Structure
 
-The directory structure of the source directory you point to with the `mdPagesSourceDir` option will determine how the pages are output in the TypeDoc build. For the most part, the output structure will match the input.
+The directory structure of the source directory you point to with the `mdPagesSourcePath` option will determine how the pages are output in the TypeDoc build. For the most part, the output structure will match the input.
 
 For example, consider the following documentation structure:
 
@@ -105,7 +105,7 @@ By default, the navigation label shown above the page links in the navigation co
 For example, the following command would rename this label to be "Guides":
 
 ```powershell
-$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourceDir path/to/markdown/doc/pages --theme markdown-pages --mdPagesLabel Guides
+$ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourcePath path/to/markdown/doc/pages --theme markdown-pages --mdPagesLabel Guides
 ```
 
 _Note: If your custom label contains spaces, wrap it in double quotes. Don't forget to escape the quotation characters if you're defining an npm script._
@@ -114,8 +114,8 @@ _Note: If your custom label contains spaces, wrap it in double quotes. Don't for
 
 The following options are available:
 
-| Option                   | Description                                                              | Default Value |
-| ------------------------ | ------------------------------------------------------------------------ | ------------- |
-| `--mdPagesSourceDir`     | The path to the directory where markdown pages will be read from         | n/a           |
-| `--mdPagesOutputDirName` | The name of the output directory where markdown pages will be written to | "pages"       |
-| `--mdPagesLabel`         | The navigation label for markdown pages                                  | "Pages"       |
+| Option                    | Description                                                              | Default Value |
+| ------------------------- | ------------------------------------------------------------------------ | ------------- |
+| `--mdPagesSourcePath`     | The path to the directory where markdown pages will be read from         | n/a           |
+| `--mdPagesOutputDirName`  | The name of the output directory where markdown pages will be written to | "pages"       |
+| `--mdPagesLabel`          | The navigation label for markdown pages                                  | "Pages"       |

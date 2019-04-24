@@ -13,6 +13,9 @@ All notable changes to this project will be documented in this file.
 - Allow theme to be used by specifying plugin name to --theme option
 - `mdPagesOutputDirName` option for specifying the name of the output directory
 
+### Updated
+- Changed `mdPagesSourceDir` option to be named `mdPagesSourcePath` for clarity
+
 ## [0.1.0] - 2019-04-14
 ### Added
 - Initial commit of the plugin with README
