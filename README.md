@@ -112,10 +112,11 @@ _Note: If your custom label contains spaces, wrap it in double quotes. Don't for
 
 ## Options
 
-The following options are available:
+The following options are available and can be used by adding the arguments to your TypeDoc command:
 
-| Option                    | Description                                                              | Default Value |
-| ------------------------- | ------------------------------------------------------------------------ | ------------- |
-| `--mdPagesSourcePath`     | The path to the directory where markdown pages will be read from         | n/a           |
-| `--mdPagesOutputDirName`  | The name of the output directory where markdown pages will be written to | "pages"       |
-| `--mdPagesLabel`          | The navigation label for markdown pages                                  | "Pages"       |
+* `--mdPagesSourcePath <path/to/markdown/pages>`<br>
+  Specifies the path to the directory where your markdown pages are. This option is required.
+* `--mdPagesOutputDirName <output directory name>`<br>
+  Specifies the name of the output directory where the rendered HTML files for your markdown pages will be written. Defaults to "pages".
+* `--mdPagesLabel <label name>`<br>
+  Specifies the navigation label for markdown pages. Defaults to "Pages".
