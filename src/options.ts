@@ -10,10 +10,10 @@ export const LABEL_OPTION = new OptionDeclaration({
 	// hint: ParameterHint.Directory
 });
 
-export const OUTPUT_DIR_OPTION = new OptionDeclaration({
+export const OUTPUT_DIR_NAME_OPTION = new OptionDeclaration({
 	component: PLUGIN_NAME,
-	help: "Markdown Pages Plugin: The name of the directory pages will be rendered to",
-	name: "mdPagesOutputDir",
+	help: "Markdown Pages Plugin: The name of the directory pages will be output to",
+	name: "mdPagesOutputDirName",
 	type: ParameterType.String,
 	// scope: ParameterScope.TypeDoc
 	// hint: ParameterHint.Directory

@@ -1,6 +1,6 @@
 import { Application } from "typedoc/dist/lib/application";
 import { PLUGIN_NAME } from "./constants";
-import { LABEL_OPTION, OUTPUT_DIR_OPTION, SOURCE_DIR_OPTION } from "./options";
+import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "./options";
 import { MarkdownPagesPlugin } from "./plugin";
 
 module.exports = (PluginHost: Application): void => {
@@ -8,7 +8,7 @@ module.exports = (PluginHost: Application): void => {
 
 	// Register options
 	app.options.addDeclaration(LABEL_OPTION);
-	app.options.addDeclaration(OUTPUT_DIR_OPTION);
+	app.options.addDeclaration(OUTPUT_DIR_NAME_OPTION);
 	app.options.addDeclaration(SOURCE_DIR_OPTION);
 
 	// Register components

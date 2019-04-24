@@ -5,8 +5,8 @@ import { Renderer } from "typedoc/dist/lib/output/renderer";
 import { Options } from "typedoc/dist/lib/utils/options";
 import { Application } from "typedoc/dist/lib/application";
 import { IMock, It, Mock, Times } from "typemoq";
-import { DEFAULT_PAGES_LABEL, THEME_NAME } from "../../src/constants";
-import { LABEL_OPTION, SOURCE_DIR_OPTION } from "../../src/options";
+import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL, THEME_NAME } from "../../src/constants";
+import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "../../src/options";
 import { resolve } from "path";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
 
@@ -77,6 +77,42 @@ describe("MarkdownPagesPlugin", () => {
 			expect(() => {
 				(sut as any)._getPagesSourceLocation(optionsMock.object);
 			}).to.throw;
+		});
+	});
+
+	describe("_getPagesOutputDirName()", () => {
+		it("returns the output directory name from options", () => {
+			// arrange
+			const optionVal = "somename";
+			optionsMock.setup(o => o.getValue(OUTPUT_DIR_NAME_OPTION.name)).returns(() => optionVal);
+
+			// act
+			const result = (sut as any)._getPagesOutputDirName(optionsMock.object);
+
+			// assert
+			expect(result).to.contain(optionVal);
+		});
+
+		it("returns default value if no directory name is specified in options", () => {
+			// arrange
+			optionsMock.setup(o => o.getValue(OUTPUT_DIR_NAME_OPTION.name)).returns(() => undefined);
+
+			// act
+			const result = (sut as any)._getPagesOutputDirName(optionsMock.object);
+
+			// assert
+			expect(result).to.contain(DEFAULT_OUTPUT_DIR_NAME);
+		});
+
+		it("returns default value if directory name specified in options is an empty string", () => {
+			// arrange
+			optionsMock.setup(o => o.getValue(OUTPUT_DIR_NAME_OPTION.name)).returns(() => "");
+
+			// act
+			const result = (sut as any)._getPagesOutputDirName(optionsMock.object);
+
+			// assert
+			expect(result).to.contain(DEFAULT_OUTPUT_DIR_NAME);
 		});
 	});
 
