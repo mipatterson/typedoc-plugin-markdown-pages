@@ -19,10 +19,10 @@ export const OUTPUT_DIR_NAME_OPTION = new OptionDeclaration({
 	// hint: ParameterHint.Directory
 });
 
-export const SOURCE_DIR_OPTION = new OptionDeclaration({
+export const SOURCE_PATH_OPTION = new OptionDeclaration({
 	component: PLUGIN_NAME,
 	help: "Markdown Pages Plugin: The path to the directory where pages will be read from",
-	name: "mdPagesSourceDir",
+	name: "mdPagesSourcePath",
 	type: ParameterType.String,
 	// scope: ParameterScope.TypeDoc
 	// hint: ParameterHint.Directory

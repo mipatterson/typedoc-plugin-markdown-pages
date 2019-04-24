@@ -6,7 +6,7 @@ import { Options } from "typedoc/dist/lib/utils/options";
 import { Application } from "typedoc/dist/lib/application";
 import { IMock, It, Mock, Times } from "typemoq";
 import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL, THEME_NAME } from "../../src/constants";
-import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "../../src/options";
+import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_PATH_OPTION } from "../../src/options";
 import { resolve } from "path";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
 
@@ -42,7 +42,7 @@ describe("MarkdownPagesPlugin", () => {
 		it("returns the source location from options", () => {
 			// arrange
 			const optionVal = "../some/relative/path/";
-			optionsMock.setup(o => o.getValue(SOURCE_DIR_OPTION.name)).returns(() => optionVal);
+			optionsMock.setup(o => o.getValue(SOURCE_PATH_OPTION.name)).returns(() => optionVal);
 
 			// act
 			const result = (sut as any)._getPagesSourceLocation(optionsMock.object);
@@ -57,7 +57,7 @@ describe("MarkdownPagesPlugin", () => {
 			const loggerMock = Mock.ofType<Logger>();
 			applicationMock.setup(a => a.logger).returns(() => loggerMock.object);
 			rendererMock.setup(r => r.application).returns(() => applicationMock.object);
-			optionsMock.setup(o => o.getValue(SOURCE_DIR_OPTION.name)).returns(() => undefined);
+			optionsMock.setup(o => o.getValue(SOURCE_PATH_OPTION.name)).returns(() => undefined);
 
 			// act / assert
 			expect(() => {
@@ -71,7 +71,7 @@ describe("MarkdownPagesPlugin", () => {
 			const loggerMock = Mock.ofType<Logger>();
 			applicationMock.setup(a => a.logger).returns(() => loggerMock.object);
 			rendererMock.setup(r => r.application).returns(() => applicationMock.object);
-			optionsMock.setup(o => o.getValue(SOURCE_DIR_OPTION.name)).returns(() => "");
+			optionsMock.setup(o => o.getValue(SOURCE_PATH_OPTION.name)).returns(() => "");
 
 			// act / assert
 			expect(() => {

@@ -3,7 +3,7 @@ import { Converter } from 'typedoc/dist/lib/converter/converter';
 import { PageEvent, RendererEvent } from "typedoc/dist/lib/output/events";
 import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL, PLUGIN_NAME, THEME_NAME } from "./constants";
 import { OptionsReadMode } from "typedoc/dist/lib/utils/options";
-import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_DIR_OPTION } from "./options";
+import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_PATH_OPTION } from "./options";
 import { join, resolve } from "path";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { ExtendedPageEvent } from "./models/extended-page-event";
@@ -118,7 +118,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	private _getPagesSourceLocation(options: Options): string {
 		try {
 			// Get option
-			const pagesSourceDir = options.getValue(SOURCE_DIR_OPTION.name);
+			const pagesSourceDir = options.getValue(SOURCE_PATH_OPTION.name);
 
 			if (!pagesSourceDir || pagesSourceDir.length === 0) {
 				throw new Error("Pages source location must be specified.");
