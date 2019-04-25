@@ -1,30 +1,29 @@
 import { Component, RendererComponent } from "typedoc/dist/lib/output/components";
 import { Converter } from 'typedoc/dist/lib/converter/converter';
 import { PageEvent, RendererEvent } from "typedoc/dist/lib/output/events";
-import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL, PLUGIN_NAME, THEME_NAME } from "./constants";
-import { OptionsReadMode } from "typedoc/dist/lib/utils/options";
-import { LABEL_OPTION, OUTPUT_DIR_NAME_OPTION, SOURCE_PATH_OPTION } from "./options";
-import { join, resolve } from "path";
+import { PLUGIN_NAME, THEME_NAME } from "./constants";
+import { join } from "path";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { ExtendedPageEvent } from "./models/extended-page-event";
 import { MarkdownPageCollection } from "./models/markdown-page-collection";
-import { IMarkdownPageCollection } from "./interfaces/markdown-page-collection-interface";
-import { Options } from "typedoc/dist/lib/utils/options";
 import { NavigationHelper } from "./helpers/navigation-helper";
 import { UrlMappingHelper } from "./helpers/url-mapping-helper";
 import { DefaultTheme } from "typedoc/dist/lib/output/themes/DefaultTheme";
 import { Renderer } from "typedoc/dist/lib/output/renderer";
+import { OptionsHelper } from "./helpers/options-helper";
 
 @Component({ name: PLUGIN_NAME })
 export class MarkdownPagesPlugin extends RendererComponent {
+	private _optionsHelper: OptionsHelper;
 	private _navigationHelper: NavigationHelper;
 	private _urlMappingHelper: UrlMappingHelper;
-	private _pageCollection: IMarkdownPageCollection
+	private _pageCollection: MarkdownPageCollection
 
 	/**
 	 * Create a new plugin instance.
 	 */
   	public initialize() {
+		this._optionsHelper = new OptionsHelper(this.application);
 		this._navigationHelper = new NavigationHelper(this._logger);
 		this._urlMappingHelper = new UrlMappingHelper(this._logger);
 
@@ -43,7 +42,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	}
 
 	private _converterResolveBeginEventHandler(): void {
-		this._setupTheme(this.application.renderer, this._getOptions());
+		this._setupTheme(this.application.renderer);
 	}
 
 	/**
@@ -54,9 +53,7 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	private renderBeginEventHandler(renderer: RendererEvent): void {
 		this._logger.verbose("Beginning rendering...");
 
-		const options = this._getOptions();
-
-		this._pageCollection = this._getPageCollection(options);
+		this._pageCollection = this._getPageCollection();
 
 		// Get a template UrlMapping that will be used to create our own mappings
 		const templateMapping = this._urlMappingHelper.getTemplateUrlMapping(renderer.urls);
@@ -73,22 +70,15 @@ export class MarkdownPagesPlugin extends RendererComponent {
      */
     private _pageBeginEventHandler(pageEvent: ExtendedPageEvent) {
 		if (this._pageCollection) { // TODO: Make sure this check works if there are no pages
-			const options = this._getOptions();
-			const labelText = this._getPagesLabel(options);
-			pageEvent.mdPagesNavigation = this._navigationHelper.getNavigationItem(pageEvent, this._pageCollection, labelText);
+			pageEvent.mdPagesNavigation = this._navigationHelper.getNavigationItem(pageEvent, this._pageCollection, this._optionsHelper.pagesLabel);
 		}
 	}
 
-	private _getPageCollection(options: Options): IMarkdownPageCollection {
+	private _getPageCollection(): MarkdownPageCollection {
 		try {
-			// Get options
-			const pagesSrcDir = this._getPagesSourceLocation(options);
-			const pagesOutputDirName = this._getPagesOutputDirName(options);
-			const label = this._getPagesLabel(options);
-
 			// Get pages and read contents
-			const collection = new MarkdownPageCollection(this._logger, pagesSrcDir, `${pagesOutputDirName}/index.html`);
-			collection.title = label;
+			const collection = new MarkdownPageCollection(this._logger, this._optionsHelper.sourcePath, `${this._optionsHelper.outputDirName}/index.html`);
+			collection.title = this._optionsHelper.pagesLabel;
 			collection.readContents();
 			collection.log();
 
@@ -101,86 +91,14 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	}
 
 	/**
-	 * Retrieves the application options from TypeDoc
-	 * @returns Application options
-	 */
-	private _getOptions(): Options {
-		const options = this.application.options;
-		options.read({}, OptionsReadMode.Prefetch);
-		return options;
-	}
-
-	/**
-	 * Retrieves the pages source location option
-	 * @param options Application options
-	 * @returns The pages source location
-	 */
-	private _getPagesSourceLocation(options: Options): string {
-		try {
-			// Get option
-			const pagesSourceDir = options.getValue(SOURCE_PATH_OPTION.name);
-
-			if (!pagesSourceDir || pagesSourceDir.length === 0) {
-				throw new Error("Pages source location must be specified.");
-			} else {
-				return resolve(pagesSourceDir);
-			}
-		} catch (e) {
-			const errorMessage = `Failed to get pages source location from options. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
-		}
-	}
-
-	/**
-	 * Retrieves the pages output directory name option
-	 * @param options Application options
-	 * @returns The pages output directory name
-	 */
-	private _getPagesOutputDirName(options: Options): string {
-		try {
-			// Get option
-			const pagesOutputDir = options.getValue(OUTPUT_DIR_NAME_OPTION.name);
-
-			if (!pagesOutputDir || pagesOutputDir.length === 0) {
-				return DEFAULT_OUTPUT_DIR_NAME;
-			} else {
-				return pagesOutputDir;
-			}
-		} catch (e) {
-			const errorMessage = `Failed to get pages output directory name from options. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
-		}
-	}
-
-	/**
-	 * Retrieves the pages label option or default value
-	 * @param options Application options
-	 * @returns The pages label
-	 */
-	private _getPagesLabel(options: Options): string {
-		const label = options.getValue(LABEL_OPTION.name);
-		if (!label || label.length === 0) {
-			return DEFAULT_PAGES_LABEL;
-		} else {
-			return label;
-		}
-	}
-
-	/**
 	 * Applies the plugin theme if the user specified its name in options
 	 * @param renderer Application renderer
-	 * @param options Application options
 	 */
-	private _setupTheme(renderer: Renderer, options: Options): void {
+	private _setupTheme(renderer: Renderer): void {
 		const themePath = join(__dirname, "theme");
-
-		// Get the theme option
-		const themeNameOption = options.getValue("theme");
 	
 		// Setup theme if it was requested
-		if (themeNameOption === THEME_NAME) {
+		if (this._optionsHelper.theme === THEME_NAME) {
 			const pluginTheme = new DefaultTheme(renderer, themePath);
 			renderer.theme = renderer.addComponent("theme", pluginTheme);
 		}
