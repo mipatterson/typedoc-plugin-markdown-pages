@@ -76,11 +76,39 @@ The file names of the markdown source files will be used to determine the names 
 
 For example, a markdown file named `HowToDoSomething.md` will be displayed as `How To Do Something` in the documentation site's navigation and breadcrumbs.
 
-## Custom Index Files
+## Index Files
 
-Each directory in the output will have an `index.html` file. By default, this file is auto-generated to include a list of links to the "child" pages inside that directory. You can provide your own custom index file by placing a markdown file in the source directory that named either `index.md` or `readme.md`.
+Each markdown source file is represented as a "markdown page" and each directory in the source directory structure is represented as a "markdown page collection", which has child "markdown pages".
+
+By default, each sub-directory in the source path will be output with an `index.html` file. Again by default, this file is auto-generated to include a list of links to the "child" pages inside that sub-directory. You can provide your own custom index file by placing a markdown file in the source sub-directory that is named either `index.md` or `readme.md`.
 
 _Note: Casing does not matter in the name of your custom index file._
+
+Alternatively, you can use one of the child pages as the index page. In this scenario, trying to navigate to the directory in the generated doc site will redirect you to the child page. To indicate that a child page should be used as an index page, prefix the markdown file name with an "_".
+
+For example, the following source structure will generate the following HTML structure:
+
+```
+docs/                         pages/
+├── GuideA.md                 ├── index.html (auto-generated)
+├── GuideB.md                 ├── GuideA.html
+├── SubDirectoryOne/          ├── GuideB.html
+│   ├── GuideC.md             ├── SubDirectoryOne/
+│   └── GuideD.md             │   ├── index.html (auto-generated)
+├── SubDirectoryTwo/          │   ├── GuideC.html
+│   ├── index.md              │   ├── GuideD.html
+│   ├── GuideE.md             ├── SubDirectoryTwo/
+│   └── GuideF.md             │   ├── index.html (generated from index.md)
+├── SubDirectoryThree/        │   ├── GuideE.html
+│   ├── README.md             │   ├── GuideF.html
+│   ├── GuideG.md             ├── SubDirectoryThree/
+│   └── GuideH.md             │   ├── index.html (generated from README.md)
+└── SubDirectoryFour/         │   ├── GuideG.html
+    ├── _GuideI.md            │   └── GuideH.html
+    └── GuideJ.md             └── SubDirectoryFour/
+                                  ├── GuideI.html (no index.html file - instead GuideI.html is used as index)
+                                  └── GuideJ.html
+```
 
 ## Themes
 

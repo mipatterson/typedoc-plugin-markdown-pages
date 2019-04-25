@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Added a way to use a child page as the index page of a page collection
 
 ## [0.2.0] - 2019-04-23
 ### Added
