@@ -1,33 +1,28 @@
-import { IMarkdownPageCollection } from "../interfaces/markdown-page-collection-interface";
-import { IMarkdownPage } from "../interfaces/markdown-page-interface";
-import { getDirectoryName, getFileExtension, getFileName, getHumanReadableNameFromFileName } from "../utilities/path-utilities";
 import { MarkdownPage } from "./markdown-page";
+import { getDirectoryName, getFileExtension, getItemNameFromPath, makeHumanReadable } from "../utilities/path-utilities";
 import { join, relative } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
+import { isIndexChildPage, parsePageTitleFromPath } from "../utilities/page-utilities";
 
-export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdownPage {
-	public title: string;
-	public index: IMarkdownPage;
-	public children: IMarkdownPage[];
-	public path: string;
-	public url: string;
-	public contents: string;
-
+export class MarkdownPageCollection extends MarkdownPage {
+	public index: MarkdownPage;
+	public children: MarkdownPage[];
 	private _logger: Logger;
 
 	constructor(logger: Logger, path: string, url: string) {
-		this._logger = logger;
-		this.path = path;
-		this.url = url;
-		this.children = [];
-
 		if (!isDirectory(path)) {
 			throw new Error(`Markdown page collection path "${path}" is not a directory.`);
 		}
 
-		this._parseTitle(path);
+		super(path, url);
+
+		this._logger = logger;
+		this.path = path;
+		this.url = url;
+		this.children = [];
+		this.title = parsePageTitleFromPath(path);
 	}
 
 	public readContents(): void {
@@ -35,7 +30,7 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 			const childItems = getDirectoryContents(this.path);
 
 			for (const childItem of childItems) {
-				let childPage: IMarkdownPage;
+				let childPage: MarkdownPage;
 				const childPath = join(this.path, childItem)
 				const isChildADirectory = isDirectory(childPath);
 				const childUrl = this._getItemUrl(childItem, isChildADirectory);
@@ -50,6 +45,10 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 
 				if (["index.md", "readme.md"].includes(childItem.toLowerCase())) {
 					this.contents = childPage.contents;
+				} else if (isIndexChildPage(childItem)) {
+					this.contents = "";
+					this.url = childPage.url;
+					this.children.unshift(childPage);
 				} else {
 					this.children.push(childPage);
 				}
@@ -64,13 +63,7 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 	}
 
 	public log(): void {
-		this._recursiveLog(this as IMarkdownPage, 0);
-	}
-
-	private _parseTitle(path: string): void {
-		const dirName = getFileName(path);
-		const humanReadableName = getHumanReadableNameFromFileName(dirName);
-		this.title = humanReadableName;
+		this._recursiveLog(this as MarkdownPage, 0);
 	}
 
 	private _getItemUrl(sourceItemName: string, isDirectory: boolean): string {
@@ -83,12 +76,15 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 			return resolve(newDir, "index.html");
 		} else {
 			const fileExtension = getFileExtension(sourceItemName);
-			const sourceItemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+			let sourceItemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+			if (isIndexChildPage(sourceItemNameWithoutExtension)) {
+				sourceItemNameWithoutExtension = sourceItemNameWithoutExtension.substr(1);
+			}
 			return resolve(urlPathToCollection, sourceItemNameWithoutExtension) + ".html";
 		}
 	}
 
-	private _recursiveLog(page: IMarkdownPage, depth: number): void {
+	private _recursiveLog(page: MarkdownPage, depth: number): void {
 		const isCollection = !!(page as any).children;
 
 		if (depth === 0) {
@@ -103,7 +99,7 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 		}
 
 		if (isCollection) {
-			for (const child of (page as IMarkdownPageCollection).children) {
+			for (const child of (page as MarkdownPageCollection).children) {
 				const newDepth = depth + Math.floor(page.title.length / 2) + (depth === 0 ? 0 : 3);
 				this._recursiveLog(child, newDepth);
 			}
@@ -117,7 +113,7 @@ export class MarkdownPageCollection implements IMarkdownPageCollection, IMarkdow
 			let contents = "## Contents";
 
 			for (const child of this.children) {
-				const childUrl = getFileName(child.url);
+				const childUrl = getItemNameFromPath(child.url);
 				contents += `\n- [${child.title}](${childUrl})`;
 			}
 

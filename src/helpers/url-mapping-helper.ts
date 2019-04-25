@@ -1,8 +1,7 @@
 import { UrlMapping } from "typedoc/dist/lib/output/models/UrlMapping";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
-import { IMarkdownPage } from "../interfaces/markdown-page-interface";
-import { IMarkdownPageCollection } from "../interfaces/markdown-page-collection-interface";
 import { MarkdownPageCollection } from "../models/markdown-page-collection";
+import { MarkdownPage } from "../models/markdown-page";
 
 export class UrlMappingHelper {
 	private _logger: Logger;
@@ -33,14 +32,14 @@ export class UrlMappingHelper {
 		}
 	}
 
-	public createUrlMappings(parentMapping: UrlMapping, page: IMarkdownPage): UrlMapping[] {
+	public createUrlMappings(parentMapping: UrlMapping, page: MarkdownPage): UrlMapping[] {
 		try {
 			this._logger.verbose(`Creating UrlMappings for page "${page.path}"...`);
 
 			const mappings: UrlMapping[] = [];
 
 			if (page instanceof MarkdownPageCollection) {
-				const collection = page as IMarkdownPageCollection;
+				const collection = page as MarkdownPageCollection;
 
 				// Create mapping for collection
 				const collectionMapping = this._buildUrlMapping(parentMapping, collection);
@@ -64,7 +63,7 @@ export class UrlMappingHelper {
 		}
 	}
 
-	private _buildUrlMapping(parentMapping: UrlMapping, page: IMarkdownPage): UrlMapping {
+	private _buildUrlMapping(parentMapping: UrlMapping, page: MarkdownPage): UrlMapping {
 		try {
 			const newModel: any = {};
 
