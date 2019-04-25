@@ -4,7 +4,7 @@ import { join, relative } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
-import { parsePageTitleFromPath } from "../utilities/page-utilities";
+import { isIndexChildPage, parsePageTitleFromPath } from "../utilities/page-utilities";
 
 export class MarkdownPageCollection extends MarkdownPage {
 	public index: MarkdownPage;
@@ -45,6 +45,10 @@ export class MarkdownPageCollection extends MarkdownPage {
 
 				if (["index.md", "readme.md"].includes(childItem.toLowerCase())) {
 					this.contents = childPage.contents;
+				} else if (isIndexChildPage(childItem)) {
+					this.contents = "";
+					this.url = childPage.url;
+					this.children.unshift(childPage);
 				} else {
 					this.children.push(childPage);
 				}
@@ -72,7 +76,10 @@ export class MarkdownPageCollection extends MarkdownPage {
 			return resolve(newDir, "index.html");
 		} else {
 			const fileExtension = getFileExtension(sourceItemName);
-			const sourceItemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+			let sourceItemNameWithoutExtension = sourceItemName.slice(0, (1 + fileExtension.length) * -1);
+			if (isIndexChildPage(sourceItemNameWithoutExtension)) {
+				sourceItemNameWithoutExtension = sourceItemNameWithoutExtension.substr(1);
+			}
 			return resolve(urlPathToCollection, sourceItemNameWithoutExtension) + ".html";
 		}
 	}
