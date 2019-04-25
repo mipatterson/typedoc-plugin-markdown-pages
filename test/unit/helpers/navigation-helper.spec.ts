@@ -5,7 +5,7 @@ import { IMock, Mock } from "typemoq";
 import { NavigationHelper } from "../../../src/helpers/navigation-helper";
 import { PageEvent } from "typedoc/dist/lib/output/events";
 import { NavigationItem } from "typedoc/dist/lib/output/models/NavigationItem";
-import { IMarkdownPageCollection } from "../../../src/interfaces/markdown-page-collection-interface";
+import { MarkdownPageCollection } from "../../../src/models/markdown-page-collection";
 
 describe("NavigationHelper", () => {
 	let loggerMock: IMock<Logger>;
@@ -22,7 +22,7 @@ describe("NavigationHelper", () => {
 			// arrange
 			const eventMock = Mock.ofType<PageEvent>();
 			eventMock.setup(e => e.url).returns(() => "fake/url/page.html");
-			const collectionMock = Mock.ofType<IMarkdownPageCollection>();
+			const collectionMock = Mock.ofType<MarkdownPageCollection>();
 			collectionMock.setup(c => c.children).returns(() => []);
 
 			// act

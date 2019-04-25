@@ -1,6 +1,6 @@
 import { basename, dirname, extname } from "path";
 
-export function getFileName(filePath: string): string {
+export function getItemNameFromPath(filePath: string): string {
 	return basename(filePath);
 }
 
@@ -16,7 +16,7 @@ export function getFileExtension(fileName: string): string {
 	return extensionWithDot;
 }
 
-export function getHumanReadableNameFromFileName(fileName: string): string {
+export function makeHumanReadable(fileName: string): string {
 	return fileName
 		// insert a space before all caps
 		.replace(/([A-Z])/g, " $1")

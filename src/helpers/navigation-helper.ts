@@ -1,7 +1,7 @@
 import { NavigationItem } from "typedoc/dist/lib/output/models/NavigationItem";
 import { PageEvent } from "typedoc/dist/lib/output/events";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
-import { IMarkdownPageCollection } from "../interfaces/markdown-page-collection-interface";
+import { MarkdownPageCollection } from "../models/markdown-page-collection";
 
 export class NavigationHelper {
 	private _logger: Logger;
@@ -10,7 +10,7 @@ export class NavigationHelper {
 		this._logger = logger;
 	}
 
-	public getNavigationItem(pageEvent: PageEvent, overallPageCollection: IMarkdownPageCollection, label: string): NavigationItem {
+	public getNavigationItem(pageEvent: PageEvent, overallPageCollection: MarkdownPageCollection, label: string): NavigationItem {
 		try {
 			this._logger.verbose(`Getting markdown page NavigationItem for page "${pageEvent.url}"...`);
 
@@ -23,7 +23,7 @@ export class NavigationHelper {
 				if (isCollection) {
 					return this._buildNavigationItemForCollection(mdPage, label, pageEvent.url);
 				} else {
-					const parentPage: IMarkdownPageCollection = pageEvent.model.parent.mdPage;
+					const parentPage: MarkdownPageCollection = pageEvent.model.parent.mdPage;
 					return this._buildNavigationItemForCollection(parentPage, label, pageEvent.url);
 				}
 			} else {
@@ -36,7 +36,7 @@ export class NavigationHelper {
 		}
 	}
 
-	private _buildNavigationItemForCollection(collection: IMarkdownPageCollection, label: string, currentUrl: string): NavigationItem {
+	private _buildNavigationItemForCollection(collection: MarkdownPageCollection, label: string, currentUrl: string): NavigationItem {
 		try {
 			this._logger.verbose(`Building NavigationItem for collection "${collection.title}"...`);
 
