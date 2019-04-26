@@ -17,9 +17,21 @@ export function getFileExtension(fileName: string): string {
 }
 
 export function makeHumanReadable(fileName: string): string {
-	return fileName
-		// insert a space before all caps
-		.replace(/([A-Z])/g, " $1")
+	let humanReadable = fileName;
+
+	// Remove leading underscores
+	if (humanReadable.charAt(0) === "_") {
+		humanReadable = humanReadable.substr(1);
+	}
+
+	// Remove trailing underscores
+	if (humanReadable.charAt(humanReadable.length - 1) === "_") {
+		humanReadable = humanReadable.slice(0, -1);
+	}
+
+	return humanReadable
+		// replace underscores with spaces
+		.replace(/_/g, " ")
 		// uppercase the first character
 		.replace(/^./, (str: string) => { return str.toUpperCase(); });
 }
