@@ -64,9 +64,9 @@ describe("Page Utilities", () => {
 				new MarkdownPage("./p/_My_Page.md", ""),
 				new MarkdownPage("./p/99_My_Page.md", ""),
 				new MarkdownPage("./p/Some_Other_Page.md", ""),
-				new MarkdownPage("./p/Another_Page.md", ""),
-				new MarkdownPage("./p/4_2_For_1.md", ""),
 				new MarkdownPage("./p/Amplification.md", ""),
+				new MarkdownPage("./p/4_2_For_1.md", ""),
+				new MarkdownPage("./p/Another_Page.md", ""),
 			];
 		});
 
@@ -96,8 +96,8 @@ describe("Page Utilities", () => {
 
 			// assert
 			expect(result.length).to.be.equal(7);
-			expect(result[4]).to.be.equal(pagesToSort[6]);
-			expect(result[5]).to.be.equal(pagesToSort[4]);
+			expect(result[4]).to.be.equal(pagesToSort[4]);
+			expect(result[5]).to.be.equal(pagesToSort[6]);
 			expect(result[6]).to.be.equal(pagesToSort[3]);
 		});
 	});

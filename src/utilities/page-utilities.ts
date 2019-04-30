@@ -54,7 +54,19 @@ export function sortPages(pages: MarkdownPage[]): MarkdownPage[] {
 	}));
 
 	// Sort unprefixed pages alphabetically and add to new array
-	sortedPages.push.apply(sortedPages, pagesWithoutSortPrefix.sort());
+	sortedPages.push.apply(sortedPages, pagesWithoutSortPrefix.sort((a: MarkdownPage, b: MarkdownPage) => {
+		const nameA = a.title;
+		const nameB = b.title;
+		if (nameA === nameB) {
+			return 0;
+		}
+		const sorted = [nameA, nameB].sort();
+		if (sorted[0] === nameA) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}));
 
 	return sortedPages;
 }
