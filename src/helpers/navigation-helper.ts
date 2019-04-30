@@ -1,19 +1,10 @@
 import { NavigationItem } from "typedoc/dist/lib/output/models/NavigationItem";
 import { PageEvent } from "typedoc/dist/lib/output/events";
-import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { MarkdownPageCollection } from "../models/markdown-page-collection";
 
 export class NavigationHelper {
-	private _logger: Logger;
-
-	constructor(logger: Logger) {
-		this._logger = logger;
-	}
-
 	public getNavigationItem(pageEvent: PageEvent, overallPageCollection: MarkdownPageCollection, label: string): NavigationItem {
 		try {
-			this._logger.verbose(`Getting markdown page NavigationItem for page "${pageEvent.url}"...`);
-
 			const isMarkdownPage = !!pageEvent.model.mdPage;
 
 			if (isMarkdownPage) {
@@ -30,16 +21,12 @@ export class NavigationHelper {
 				return this._buildNavigationItemForCollection(overallPageCollection, label, pageEvent.url);
 			}
 		} catch (e) {
-			const errorMessage = `Failed to get pages NavigationItem. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to get pages NavigationItem. ${e}`);
 		}
 	}
 
 	private _buildNavigationItemForCollection(collection: MarkdownPageCollection, label: string, currentUrl: string): NavigationItem {
 		try {
-			this._logger.verbose(`Building NavigationItem for collection "${collection.title}"...`);
-
 			const topLevelItem = new NavigationItem();
 			topLevelItem.children = [];
 
@@ -58,9 +45,7 @@ export class NavigationHelper {
 
 			return topLevelItem;
 		} catch (e) {
-			const errorMessage = `Failed to get NavigationItem for page collection "${collection.title}". ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to get NavigationItem for page collection "${collection.title}". ${e}`);
 		}
 	}
 

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 ## [0.3.0] - 2019-04-25
 ### Added
 - Added a way to use a child page as the index page of a page collection
+- Added support for prefixing markdown file names to enforce sort order
 
 ## [0.2.0] - 2019-04-23
 ### Added
