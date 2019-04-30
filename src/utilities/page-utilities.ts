@@ -1,6 +1,7 @@
 import { isDirectory } from "./filesystem-utilities";
-import { getFileExtension, getItemNameFromPath, makeHumanReadable } from "./path-utilities";
+import { getFileExtension, getItemNameFromPath, getSortIndexFromPath, makeHumanReadable } from "./path-utilities";
 import { PAGE_PREFIX_CHAR } from "../constants";
+import { MarkdownPage } from "../models/markdown-page";
 
 /**
  * Parses a page or page collection title from the provided source path
@@ -26,4 +27,34 @@ export function parsePageTitleFromPath(path: string): string {
 
 export function isIndexChildPage(fileName: string): boolean {
 	return fileName.length > 1 && fileName.charAt(0) === PAGE_PREFIX_CHAR;
+}
+
+export function sortPages(pages: MarkdownPage[]): MarkdownPage[] {
+	const sortedPages = [];
+	const pagesWithSortPrefix = [];
+	const pagesWithoutSortPrefix = [];
+
+	// Find index child, and split children based on presence of prefix
+	for (const page of pages) {
+		const itemName = getItemNameFromPath(page.path);
+		if (isIndexChildPage(itemName)) {
+			sortedPages.push(page);
+		} else {
+			if (getSortIndexFromPath(page.path)) {
+				pagesWithSortPrefix.push(page);
+			} else {
+				pagesWithoutSortPrefix.push(page);
+			}
+		}
+	}
+
+	// Sort prefixed pages by prefix and add to new array
+	sortedPages.push.apply(sortedPages, pagesWithSortPrefix.sort((a: MarkdownPage, b: MarkdownPage) => {
+		return getSortIndexFromPath(a.path) - getSortIndexFromPath(b.path);
+	}));
+
+	// Sort unprefixed pages alphabetically and add to new array
+	sortedPages.push.apply(sortedPages, pagesWithoutSortPrefix.sort());
+
+	return sortedPages;
 }

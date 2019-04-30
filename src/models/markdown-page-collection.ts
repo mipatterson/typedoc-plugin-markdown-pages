@@ -1,10 +1,10 @@
 import { MarkdownPage } from "./markdown-page";
-import { getDirectoryName, getFileExtension, getItemNameFromPath, makeHumanReadable } from "../utilities/path-utilities";
+import { getDirectoryName, getFileExtension, getItemNameFromPath, getSortIndexFromPath, makeHumanReadable } from "../utilities/path-utilities";
 import { join, relative } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
 import { Logger } from "typedoc/dist/lib/utils/loggers";
-import { isIndexChildPage, parsePageTitleFromPath } from "../utilities/page-utilities";
+import { isIndexChildPage, parsePageTitleFromPath, sortPages } from "../utilities/page-utilities";
 
 export class MarkdownPageCollection extends MarkdownPage {
 	public index: MarkdownPage;
@@ -53,6 +53,8 @@ export class MarkdownPageCollection extends MarkdownPage {
 					this.children.push(childPage);
 				}
 			}
+
+			this.children = sortPages(this.children);
 
 			if (!this.contents) {
 				this._generateIndexContents();

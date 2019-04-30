@@ -19,5 +19,13 @@ describe("Path Utilities", () => {
 		it("handles trailing underscores", () => {
 			expect(makeHumanReadable("My_File_Name_")).to.equal("My File Name");
 		});
+
+		it("handles leading sort-prefixes", () => {
+			expect(makeHumanReadable("1_My_File_Name")).to.equal("My File Name");
+		});
+
+		it("handles 0-padded leading sort-prefixes", () => {
+			expect(makeHumanReadable("0009_My_File_Name")).to.equal("My File Name");
+		});
 	});
 });

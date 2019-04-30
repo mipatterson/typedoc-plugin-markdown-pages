@@ -29,9 +29,23 @@ export function makeHumanReadable(fileName: string): string {
 		humanReadable = humanReadable.slice(0, -1);
 	}
 
+	// Remove sort-prefixes
+	humanReadable = humanReadable.replace(/^(\d+_)/gm, "");
+
 	return humanReadable
 		// replace underscores with spaces
 		.replace(/_/g, " ")
 		// uppercase the first character
 		.replace(/^./, (str: string) => { return str.toUpperCase(); });
+}
+
+export function getSortIndexFromPath(path: string): number {
+	const itemName = getItemNameFromPath(path);
+	const sortPrefix = itemName.match(/^(\d+_)/);
+	if (sortPrefix && sortPrefix.length > 0) {
+		const unpaddedPrefix = sortPrefix[0].replace(/^0+/, "");
+		return parseInt(unpaddedPrefix.slice(0, -1));
+	} else {
+		return undefined;
+	}
 }
