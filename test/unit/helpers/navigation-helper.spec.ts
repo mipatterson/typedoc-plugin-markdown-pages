@@ -1,20 +1,16 @@
 import { expect } from "chai";
 import "mocha";
-import { Logger } from "typedoc/dist/lib/utils/loggers";
-import { IMock, Mock } from "typemoq";
+import { Mock } from "typemoq";
 import { NavigationHelper } from "../../../src/helpers/navigation-helper";
 import { PageEvent } from "typedoc/dist/lib/output/events";
 import { NavigationItem } from "typedoc/dist/lib/output/models/NavigationItem";
 import { MarkdownPageCollection } from "../../../src/models/markdown-page-collection";
 
 describe("NavigationHelper", () => {
-	let loggerMock: IMock<Logger>;
 	let sut: NavigationHelper;
 
 	beforeEach(() => {
-		loggerMock = Mock.ofType<Logger>();
-
-		sut = new NavigationHelper(loggerMock.object);
+		sut = new NavigationHelper();
 	})
 
 	describe("getNavigationItem()", () => {

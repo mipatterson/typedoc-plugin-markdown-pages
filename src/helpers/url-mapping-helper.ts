@@ -1,19 +1,10 @@
 import { UrlMapping } from "typedoc/dist/lib/output/models/UrlMapping";
-import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { MarkdownPageCollection } from "../models/markdown-page-collection";
 import { MarkdownPage } from "../models/markdown-page";
 
 export class UrlMappingHelper {
-	private _logger: Logger;
-
-	constructor(logger: Logger) {
-		this._logger = logger;
-	}
-
 	public getTemplateUrlMapping(mappings: UrlMapping[]): UrlMapping {
 		try {
-			this._logger.verbose("Getting template UrlMapping...");
-
 			const templates = mappings.filter((mapping: UrlMapping): boolean => {
 				return mapping.url === "index.html";
 			});
@@ -22,20 +13,14 @@ export class UrlMappingHelper {
 				throw new Error("Failed to find UrlMapping with URL 'index.html'.");
 			}
 
-			this._logger.verbose("Template UrlMapping found.");
-
 			return templates[0];
 		} catch (e) {
-			const errorMessage = `Failed to get template UrlMapping. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to get template UrlMapping. ${e}`);
 		}
 	}
 
 	public createUrlMappings(parentMapping: UrlMapping, page: MarkdownPage): UrlMapping[] {
 		try {
-			this._logger.verbose(`Creating UrlMappings for page "${page.path}"...`);
-
 			const mappings: UrlMapping[] = [];
 
 			if (page instanceof MarkdownPageCollection) {
@@ -57,9 +42,7 @@ export class UrlMappingHelper {
 
 			return mappings;
 		} catch (e) {
-			const errorMessage = `Failed to create UrlMappings. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to create UrlMappings. ${e}`);
 		}
 	}
 
@@ -81,9 +64,7 @@ export class UrlMappingHelper {
 
 			return new UrlMapping(page.url, newModel, "page.hbs"); // TODO: make template configurable
 		} catch (e) {
-			const errorMessage = `Failed to build UrlMapping. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to build UrlMapping. ${e}`);
 		}
 	}
 }

@@ -3,7 +3,6 @@ import { Converter } from 'typedoc/dist/lib/converter/converter';
 import { PageEvent, RendererEvent } from "typedoc/dist/lib/output/events";
 import { PLUGIN_NAME, THEME_NAME } from "./constants";
 import { join } from "path";
-import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { ExtendedPageEvent } from "./models/extended-page-event";
 import { MarkdownPageCollection } from "./models/markdown-page-collection";
 import { NavigationHelper } from "./helpers/navigation-helper";
@@ -24,8 +23,8 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	 */
   	public initialize() {
 		this._optionsHelper = new OptionsHelper(this.application);
-		this._navigationHelper = new NavigationHelper(this._logger);
-		this._urlMappingHelper = new UrlMappingHelper(this._logger);
+		this._navigationHelper = new NavigationHelper();
+		this._urlMappingHelper = new UrlMappingHelper();
 
 		this.listenTo(this.application.converter, {
 			[Converter.EVENT_RESOLVE_BEGIN]: this._converterResolveBeginEventHandler,
@@ -35,10 +34,6 @@ export class MarkdownPagesPlugin extends RendererComponent {
 			[RendererEvent.BEGIN]: this.renderBeginEventHandler,
 			[PageEvent.BEGIN]: this._pageBeginEventHandler,
 		});
-	}
-
-	private get _logger(): Logger {
-		return this.owner.application.logger;
 	}
 
 	private _converterResolveBeginEventHandler(): void {
@@ -51,8 +46,6 @@ export class MarkdownPagesPlugin extends RendererComponent {
      * @param renderer  An event object describing the current render operation.
      */
 	private renderBeginEventHandler(renderer: RendererEvent): void {
-		this._logger.verbose("Beginning rendering...");
-
 		this._pageCollection = this._getPageCollection();
 
 		// Get a template UrlMapping that will be used to create our own mappings
@@ -77,16 +70,13 @@ export class MarkdownPagesPlugin extends RendererComponent {
 	private _getPageCollection(): MarkdownPageCollection {
 		try {
 			// Get pages and read contents
-			const collection = new MarkdownPageCollection(this._logger, this._optionsHelper.sourcePath, `${this._optionsHelper.outputDirName}/index.html`);
+			const collection = new MarkdownPageCollection(this._optionsHelper.sourcePath, `${this._optionsHelper.outputDirName}/index.html`);
 			collection.title = this._optionsHelper.pagesLabel;
 			collection.readContents();
-			collection.log();
 
 			return collection;
 		} catch (e) {
-			const errorMessage = `Failed to get page collection. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to get page collection. ${e}`);
 		}
 	}
 

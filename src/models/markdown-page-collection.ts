@@ -3,22 +3,19 @@ import { getDirectoryName, getFileExtension, getItemNameFromPath, getSortIndexFr
 import { join, relative } from "path";
 import { resolve } from "url";
 import { getDirectoryContents, isDirectory } from "../utilities/filesystem-utilities";
-import { Logger } from "typedoc/dist/lib/utils/loggers";
 import { isIndexChildPage, parsePageTitleFromPath, sortPages } from "../utilities/page-utilities";
 
 export class MarkdownPageCollection extends MarkdownPage {
 	public index: MarkdownPage;
 	public children: MarkdownPage[];
-	private _logger: Logger;
 
-	constructor(logger: Logger, path: string, url: string) {
+	constructor(path: string, url: string) {
 		if (!isDirectory(path)) {
 			throw new Error(`Markdown page collection path "${path}" is not a directory.`);
 		}
 
 		super(path, url);
 
-		this._logger = logger;
 		this.path = path;
 		this.url = url;
 		this.children = [];
@@ -36,7 +33,7 @@ export class MarkdownPageCollection extends MarkdownPage {
 				const childUrl = this._getItemUrl(childItem, isChildADirectory);
 
 				if (isChildADirectory) {
-					childPage = new MarkdownPageCollection(this._logger, childPath, childUrl);
+					childPage = new MarkdownPageCollection(childPath, childUrl);
 				} else {
 					childPage = new MarkdownPage(childPath, childUrl);
 				}
@@ -64,10 +61,6 @@ export class MarkdownPageCollection extends MarkdownPage {
 		}
 	}
 
-	public log(): void {
-		this._recursiveLog(this as MarkdownPage, 0);
-	}
-
 	private _getItemUrl(sourceItemName: string, isDirectory: boolean): string {
 		const urlPathToCollection = getDirectoryName(this.url)
 			.replace(/\/?$/, "/"); // ensure last character is a slash
@@ -86,32 +79,8 @@ export class MarkdownPageCollection extends MarkdownPage {
 		}
 	}
 
-	private _recursiveLog(page: MarkdownPage, depth: number): void {
-		const isCollection = !!(page as any).children;
-
-		if (depth === 0) {
-			this._logger.verbose(page.title);
-		} else {
-			let prefix = "";
-			for (let i = 0; i < depth; i++) {
-				prefix += " ";
-			}
-			prefix += "|__"
-			this._logger.verbose(`${prefix}${page.title}`);
-		}
-
-		if (isCollection) {
-			for (const child of (page as MarkdownPageCollection).children) {
-				const newDepth = depth + Math.floor(page.title.length / 2) + (depth === 0 ? 0 : 3);
-				this._recursiveLog(child, newDepth);
-			}
-		}
-	}
-
 	private _generateIndexContents(): void {
 		try {
-			this._logger.verbose(`Generating index contents for page "${this.title}"...`);
-
 			let contents = "## Contents";
 
 			for (const child of this.children) {
@@ -120,11 +89,8 @@ export class MarkdownPageCollection extends MarkdownPage {
 			}
 
 			this.contents = contents;
-			this._logger.verbose(this.contents);
 		} catch (e) {
-			const errorMessage = `Failed to generate index contents. ${e}`;
-			this._logger.error(errorMessage);
-			throw new Error(errorMessage);
+			throw new Error(`Failed to generate index contents. ${e}`);
 		}
 	}
 }
