@@ -1,5 +1,4 @@
 import { resolve } from "path";
-import { OptionsReadMode } from "typedoc/dist/lib/utils/options";
 import { Options } from "typedoc/dist/lib/utils/options";
 import { Application } from "typedoc/dist/lib/application";
 import { DEFAULT_OUTPUT_DIR_NAME, DEFAULT_PAGES_LABEL } from "../constants";
@@ -26,7 +25,7 @@ export class OptionsHelper {
 	 */
 	public get sourcePath(): string {
 		try {
-			const sourcePath = this._getOptions().getValue(SOURCE_PATH_OPTION.name);
+			const sourcePath = <string> this._getOptions().getValue(SOURCE_PATH_OPTION.name);
 			if (!sourcePath || sourcePath.length === 0) {
 				throw new Error("Pages source path must be specified.");
 			} else {
@@ -43,7 +42,7 @@ export class OptionsHelper {
 	 */
 	public get outputDirName(): string {
 		try {
-			const outputDirName = this._getOptions().getValue(OUTPUT_DIR_NAME_OPTION.name);
+			const outputDirName =  <string> this._getOptions().getValue(OUTPUT_DIR_NAME_OPTION.name);
 			if (!outputDirName || outputDirName.length === 0) {
 				return DEFAULT_OUTPUT_DIR_NAME;
 			} else {
@@ -59,7 +58,7 @@ export class OptionsHelper {
 	 * @readonly
 	 */
 	public get pagesLabel(): string {
-		const label = this._getOptions().getValue(LABEL_OPTION.name);
+		const label = <string> this._getOptions().getValue(LABEL_OPTION.name);
 		if (!label || label.length === 0) {
 			return DEFAULT_PAGES_LABEL;
 		} else {
@@ -91,6 +90,5 @@ export class OptionsHelper {
 	 */
 	private _readTypeDocOptions(): void {
 		this._options = this._application.options;
-		this._options.read({}, OptionsReadMode.Prefetch);
 	}
 }

@@ -7,9 +7,9 @@ module.exports = (PluginHost: Application): void => {
 	const app = PluginHost.owner;
 
 	// Register options
-	app.options.addDeclaration(LABEL_OPTION);
-	app.options.addDeclaration(OUTPUT_DIR_NAME_OPTION);
-	app.options.addDeclaration(SOURCE_PATH_OPTION);
+	app.options.addDeclaration(<any> LABEL_OPTION);
+	app.options.addDeclaration(<any> OUTPUT_DIR_NAME_OPTION);
+	app.options.addDeclaration(<any> SOURCE_PATH_OPTION);
 
 	// Register components
 	app.renderer.addComponent(PLUGIN_NAME, new MarkdownPagesPlugin(app.renderer));
