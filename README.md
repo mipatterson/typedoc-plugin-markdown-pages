@@ -10,7 +10,7 @@
 
 ## Installation
 
-```powershell
+```bash
 $ npm install typedoc-plugin-markdown-pages --save-dev
 ```
 
@@ -20,7 +20,7 @@ After installing the plugin, add the `mdPagesSourcePath` option to your TypeDoc 
 
 The following command will parse all the markdown files in the `/path/to/markdown/doc/pages` directory and add them as separate documentation pages to the TypeDoc output.
 
-```powershell
+```bash
 $ node_modules/.bin/typedoc --out path/to/built/docs path/to/src/ --mdPagesSourcePath path/to/markdown/doc/pages --theme markdown-pages
 ```
 
